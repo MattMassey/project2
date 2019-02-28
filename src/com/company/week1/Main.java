@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("This programs allows you to keep a running to-do list.");
-        System.out.println("(1) Add a task.\n(2) Change a task.\n(3) Remove a task.\n(4) List all tasks.\n(0) Exit");
+        System.out.println("(1) Add a task.\n(2) Change a task.\n(3) Remove a task.\n(4) List tasks.\n(0) Exit");
         int choice = Integer.parseInt(input.nextLine());
         while (choice != 0) {
             String tempName;
@@ -53,9 +53,7 @@ public class Main {
                             System.out.println("That was not an integer.");
                         }
                     }
-                    System.out.println("New Description?");
-                    tempDesc = input.nextLine();
-                    changeTask(tempInt, tempDesc);
+                    changeTask(tempInt);
                     System.out.println("Done.");
                     break;
                 case 3:
@@ -72,15 +70,43 @@ public class Main {
                     System.out.println("Done.");
                     break;
                 case 4:
-                    System.out.println(list);
+                    System.out.println("Would you like to: (1) list all tasks, or (2) only those of a specific priority?");
+                    while (!goodInput) {
+                        try {
+                            tempInt = Integer.parseInt(input.nextLine());
+                            if (tempInt == 1 || tempInt == 2) {
+                                goodInput = true;
+
+                            } else {
+                                throw new Exception();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Oops!  That was not an integer, or was out of range.");
+                        }
+                    }
+                    goodInput = false;
+                    if (tempInt == 1) {
+                        System.out.println(list);
+                    } else {
+                        while (!goodInput) {
+                            try {
+                                System.out.println("What priority?");
+                                listTask(Integer.parseInt(input.nextLine()));
+                                goodInput = true;
+                            } catch (Exception e) {
+                                System.out.println("That was not an integer.");
+                            }
+                        }
+                    }
                     break;
                 default:
                     System.out.println("Invalid choice.  Please try again.");
                     break;
             }
-            System.out.println("(1) Add a task.\n(2) Change a task.\n(3) Remove a task.\n(4) List all tasks.\n(0) Exit");
+            System.out.println("(1) Add a task.\n(2) Change a task.\n(3) Remove a task.\n(4) List tasks.\n(0) Exit");
             choice = Integer.parseInt(input.nextLine());
         }
+        System.out.println("Goodbye!");
     }
 
     public static Task addTask(String name, String desc, int pri) {
@@ -99,11 +125,24 @@ public class Main {
         }
     }
 
-    public static void changeTask(int identifier, String newDesc) {
+    public static void changeTask(int identifier) {
         if (list.containsKey(identifier)) {
-            list.get(identifier).setDescription(newDesc);
+            System.out.println("New Description?");
+            list.get(identifier).setDescription(input.nextLine());
         } else {
             System.out.println("That task identifier doesn't exist");
+        }
+    }
+
+    public static void listTask(int priority) {
+        try {
+            for (int i = 1; i <= list.size(); i++) {
+                if (list.get(i).getPriority() == priority) {
+                    System.out.println(list.get(i));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getLocalizedMessage());
         }
     }
 }
